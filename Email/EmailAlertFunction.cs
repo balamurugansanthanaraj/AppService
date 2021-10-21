@@ -10,13 +10,13 @@ namespace Email
     public static class EmailAlertFunction
     {
         [FunctionName("Alert")]
-        public static void Run([TimerTrigger("0/10 * * * * *")]TimerInfo myTimer, ILogger log)
+        public static void Run([TimerTrigger("* 0/2 * * * *")]TimerInfo myTimer, ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
-
+            
             var emailAlerts = new List<EmailAlert>();
             //using (SqlConnection connection = new SqlConnection(Environment.GetEnvironmentVariable("EmailAlertDbConnectionString")))
-            using (SqlConnection connection = new SqlConnection(Environment.GetEnvironmentVariable("ConnectionStrings:emailAlert")))
+            using (SqlConnection connection = new SqlConnection(Environment.GetEnvironmentVariable("EmailAlertDbConnectionString")))
             {
                 connection.Open();
                 var query = @"Select * from EmailAlerts where EmailSent = @Id";
@@ -39,7 +39,7 @@ namespace Email
             {
                 log.LogInformation($"email not sent for id {emailAlert.Id}");
 
-                using (SqlConnection connection = new SqlConnection(Environment.GetEnvironmentVariable("ConnectionStrings:emailAlert")))
+                using (SqlConnection connection = new SqlConnection(Environment.GetEnvironmentVariable("EmailAlertDbConnectionString")))
                 {
                     connection.Open();
                     var query = @"Update EmailAlerts Set EmailSent = @EmailSent where ID=@Id";
