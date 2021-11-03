@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: green-whale-deployment
+spec:
+  selector:
+    matchLabels:
+      app: green-whale
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: green-whale
+    spec:
+      containers:
+      - name: green-whale-container
+        image: aksdemo99.azurecr.io/hello-green-whale:v1
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: green-whale-service
+spec:
+  selector:
+    app: green-whale
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+

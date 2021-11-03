@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue-whale-deployment
+spec:
+  selector:
+    matchLabels:
+      app: blue-whale
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: blue-whale
+    spec:
+      containers:
+      - name: blue-whale-container
+        image: aksdemo99.azurecr.io/hello-blue-whale:v1
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: blue-whale-service
+spec:
+  selector:
+    app: green-whale
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+
