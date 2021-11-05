@@ -1,0 +1,28 @@
+az group create --location eastus --name aksdemo96
+
+az acr create -g aksdemo96 -l eastus -n aksdemo96 --sku basic
+
+ada575ca-592c-45c4-8116-11efd5655350
+EXh7Q~x8dwEWWvpxwmBUvk5vcVZqhy~3dvjgg
+
+az aks create --resource-group aksdemo96 --name aksdemo96 --node-count 1 --generate-ssh-keys --service-principal "ada575ca-592c-45c4-8116-11efd5655350" --client-secret "EXh7Q~x8dwEWWvpxwmBUvk5vcVZqhy~3dvjgg"
+
+az aks get-credentials -n aksdemo96 -g aksdemo96
+
+az disk create -g aksdemo96 -n sqlserver_disk --size-gb 5 --query id --output tsv
+/subscriptions/a7e07928-a936-4bf3-b758-f7362f0a6e79/resourceGroups/aksdemo96/providers/Microsoft.Compute/disks/sqlserver_disk
+
+docker pull mcr.microsoft.com/mssql/server
+
+docker pull praqma/network-multitool
+
+
+$accountName = "aksdemo99"
+$accountNameBytes = [System.Text.Encoding]::UTF8.GetBytes($accountName)
+$accountNameBase64 = [Convert]::ToBase64String($accountNameBytes)
+Write-Host "Account Name Base 64: " $accountNameBase64
+
+$accountKey = "vhgIoo7CROtFpFmkQERaD4/+vHvbTukOJg4u0aoldREEBoG4Av8hfjGHQAbmRLnTTf4Gr52zngDOdrWt76zz4A=="
+$accountKeyBytes = [System.Text.Encoding]::UTF8.GetBytes($accountKey)
+$accountKeyBase64 = [Convert]::ToBase64String($accountKeyBytes)
+Write-Host "Account Name Key 64: " $accountKeyBase64

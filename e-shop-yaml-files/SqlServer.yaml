@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlserver-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sqlserver-pod
+  template:
+    metadata:
+      labels:
+        app: sqlserver-pod
+    spec:
+      containers:
+      - name: sqlserver-container
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        imagePullPolicy: IfNotPresent
+        envFrom:        
+          - configMapRef:
+             name: sqlserver-configmap          
+          - secretRef:
+             name: sqlserver-mysecret        
+        volumeMounts:
+        - name: mssqldb
+          mountPath: /var/opt/mssql      
+      volumes:
+      - name: mssqldb
+        persistentVolumeClaim:
+          claimName: sqlserver-azdisk-pvc 
+      securityContext:
+        fsGroup: 10001
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssqlserver-srv
+spec:
+  type: ClusterIP 
+  selector:
+    app: sqlserver-pod
+  ports:
+    - name: http
+      protocol: TCP
+      port: 1433
+      targetPort: 1433
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssqlserver-lb-srv
+spec:
+  type: LoadBalancer
+  selector:
+    app: sqlserver-pod
+  ports:
+    - name: http
+      protocol: TCP
+      port: 1433
+      targetPort: 1433
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sqlserver-configmap
+data:
+  ACCEPT_EULA: "Y"
+  MSSQL_PID : "Developer"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sqlserver-mysecret
+type: Opaque
+data:
+  SA_PASSWORD: UGFzc3dvcmRfMTIz

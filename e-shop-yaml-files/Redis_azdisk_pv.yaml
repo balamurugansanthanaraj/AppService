@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-azuredisk-pv
+  labels:
+    component: redis
+    type : azdisk
+spec:
+  capacity:
+    storage: 1Gi  
+  storageClassName: ""
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain  
+  azureDisk:
+      kind: Managed
+      diskName: sqlserver_disk
+      diskURI: /subscriptions/a7e07928-a936-4bf3-b758-f7362f0a6e79/resourceGroups/aksdemo96/providers/Microsoft.Compute/disks/sqlserver_disk
+
+# ---
+
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: azurefile
+# spec:
+#   capacity:
+#     storage: 5Gi
+#   accessModes:
+#     - ReadWriteMany
+#   azureFile:
+#     secretName: azure-secret
+#     secretNamespace: default
+#     shareName: aksshare
+#     readOnly: false
+#   mountOptions:
+#   - dir_mode=0755
+#   - file_mode=0755
+#   - uid=1000
+#   - gid=1000

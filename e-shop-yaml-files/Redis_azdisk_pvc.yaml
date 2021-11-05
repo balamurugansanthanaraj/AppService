@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-azdisk-pvc
+spec:
+  resources:
+    requests:
+      storage: 1Gi  
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  # selector:
+  #   matchLabels:
+  #     component: sqlserver
+  #     type : azfile
+
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: azurefile
+# spec:
+#   accessModes:
+#     - ReadWriteMany
+#   storageClassName: ""
+#   resources:
+#     requests:
+#       storage: 5Gi
